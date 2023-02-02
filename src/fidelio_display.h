@@ -61,7 +61,7 @@ private:
   uint32_t _spiClk;
   bool _pm, _alarm, _dots;
   long _tLastTime;
-  static byte numbers[];
+  static word numbers[];
   static byte daddr[];
 
 };

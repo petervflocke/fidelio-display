@@ -1,7 +1,7 @@
 #include "fidelio_display.h"
 #include <SPI.h>
 
-byte FidelioDisplay::numbers[] = {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F, 0x00}; //0..9: where : = empty
+word FidelioDisplay::numbers[] = {0x3F00, 0x0600, 0x5B00, 0x4F00, 0x6600, 0x6D00, 0x7D00, 0x0700, 0x7F00, 0x6F00, 0x0000}; //0..9: where : = empty
 byte FidelioDisplay::daddr[]   = {0xC6, 0xC4, 0xC2, 0xC0};
 
 // namespace PT6964 {
@@ -86,7 +86,7 @@ void FidelioDisplay::write(char *buf)
   for (int i = 0; i < 4; i++)  {
     Serial.println(buf[i]);
     if (buf[i] == 0) break;
-    word data = (numbers[buf[i] - '0'] << 8) + daddr[i];
+    word data = numbers[buf[i] - '0'] + daddr[i];
     if (_dots  && i == 1) data |= 0x8000;
     if (_alarm && i == 2) data |= 0x8000;
     if (_pm    && i == 3) data |= 0x8000;
@@ -101,7 +101,7 @@ void FidelioDisplay::at(byte pos, char digit)
   if (pos > 4) return;
   sendCommand(CMD_MODE_WRITE_FIXED_ADDRESS);
   // sendByte(daddr[pos]);    // 3: Set address to 00 / first  
-  word data = (numbers[digit - '0'] << 8) + daddr[pos];
+  word data = numbers[digit - '0'] + daddr[pos];
   if (_dots  && pos == 1) data |= 0x8000;
   if (_alarm && pos == 2) data |= 0x8000;
   if (_pm    && pos == 3) data |= 0x8000;
